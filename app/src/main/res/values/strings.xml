@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">The Factor Factor</string>
+    <string name="gameName">The Factor Factor</string>
+    <string name="startBtn">GO</string>
+    <string name="inputStatement">Enter A Number To Work On:</string>
+    <string name="numberInput">Enter Number</string>
+    <string name="sp">STREAK POINTS</string>
+    <string name="timerShow">Time Left</string>
+</resources>
