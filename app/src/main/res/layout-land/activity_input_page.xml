@@ -56,10 +56,11 @@
             android:id="@+id/numberInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
             android:gravity="center"
+            android:inputType="number"
             android:textAlignment="center"
-            android:textSize="20sp"
-            android:fontFamily="sans-serif-condensed"/>
+            android:textSize="20sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView

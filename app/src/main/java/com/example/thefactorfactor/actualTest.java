@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.PersistableBundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
@@ -21,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -32,6 +34,12 @@ public class actualTest extends AppCompatActivity {
     public int counter=10;
     int points=0;
     CountDownTimer countDownTimer;
+    ArrayList<Integer> testList=new ArrayList<>();
+    int checker;
+    ListView listView;
+    int chosen=0;
+    TextView timer;
+    boolean flag=false;
 
 
 
@@ -44,30 +52,8 @@ public class actualTest extends AppCompatActivity {
 
         final ConstraintLayout constraintLayout=(ConstraintLayout)findViewById(R.id.layoutTest);
         final ConstraintLayout landscape=findViewById(R.id.land);
-        final TextView timer=(TextView)findViewById(R.id.timer);
-        countDownTimer=new CountDownTimer(10000, 1000){
-            public void onTick(long millisUntilFinished){
-                timer.setText(String.valueOf(counter));
-                if (counter >= 7) {
-                    timer.setTextColor(getResources().getColor(R.color.Green));
-                }else if(counter>=3) {
-                    timer.setTextColor(getResources().getColor(R.color.Orange));
-                }else if(counter>=0){
-                    timer.setTextColor(getResources().getColor(R.color.Red));
-                }counter--;
-            }
-            public  void onFinish(){
-                alertDialog("Time up!","Show Final Score?",R.drawable.ic_wrong);
-                Vibrator vibrator=(Vibrator)getSystemService(VIBRATOR_SERVICE);
-                if (Build.VERSION.SDK_INT > 26) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
-                }else {
-                    vibrator.vibrate(200);
-                }
+        timer=(TextView)findViewById(R.id.timer);
 
-            }
-
-        };
 
 
         Intent intent=getIntent();
@@ -78,49 +64,90 @@ public class actualTest extends AppCompatActivity {
         inputvalue.setText("FIND FACTOR OF: "+String.valueOf(num));
 
 
-        ListView listView=findViewById(R.id.testList);
-        final ArrayList<Integer> testList= new ArrayList<>();
-        separateNumbers(num);
-        final int checker=getRandomElement(factors);
-        testList.add(checker);
-        testList.add(threadRandom(nonfactors));
-        testList.add(threadRandom(nonfactors));
-        Collections.shuffle(testList);
+        listView=findViewById(R.id.testlist);
+        if(savedInstanceState!=null)
+        {
+            testList=(ArrayList<Integer>)savedInstanceState.getSerializable("list");
+            checker=savedInstanceState.getInt("checker");
+            counter=savedInstanceState.getInt("counter");
+            flag=savedInstanceState.getBoolean("click");
+            chosen=savedInstanceState.getInt("chosen");
+           Timersetup(counter);
+        }else {
+            separateNumbers(num);
+            checker = getRandomElement(factors);
+            testList.add(checker);
+            testList.add(threadRandom(nonfactors));
+            testList.add(threadRandom(nonfactors));
+            Collections.shuffle(testList);
+            Timersetup(counter);
+        }
 
-        ArrayAdapter adapter=new ArrayAdapter(actualTest.this,android.R.layout.simple_list_item_1,testList);
+        ArrayAdapter adapter = new ArrayAdapter(actualTest.this, android.R.layout.simple_list_item_1, testList);
         listView.setAdapter(adapter);
 
-        countDownTimer.start();
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                countDownTimer.cancel();
-                if(testList.get(i)==checker){
-                    points+=50;
-                    alertDialog("Correct Answer","Continue With the Game",R.drawable.ic_correct);
-                    if(getScreenOrientation()==ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                        constraintLayout.setBackgroundColor(Color.GREEN);
-                    }else if(getScreenOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
-                        landscape.setBackgroundColor(Color.GREEN);
-                    }
+        //next set of actions happens after checking wether an earlier click has happened
 
-                }else {
-                    alertDialog("Wrong Answer","Show Final Score?\nThe Correct answer is "+checker,R.drawable.ic_wrong);
-                    if(getScreenOrientation()==ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                        constraintLayout.setBackgroundColor(Color.RED);
-                    }else if((getScreenOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE )|| (getScreenOrientation()==ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)){
-                        landscape.setBackgroundColor(Color.RED);
-                    }
-                    Vibrator vibrator=(Vibrator)getSystemService(VIBRATOR_SERVICE);
-                    if (Build.VERSION.SDK_INT > 26) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
-                    }else {
-                        vibrator.vibrate(200);
+        if(flag==false) {
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    flag = true;
+                    countDownTimer.cancel();
+                    chosen=testList.get(i);
+                    if (chosen == checker) {
+                        points += 50;
+                        alertDialog("Correct Answer", "Continue With the Game", R.drawable.ic_correct);
+                        if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                            constraintLayout.setBackgroundColor(Color.GREEN);
+                        } else if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                            landscape.setBackgroundColor(Color.GREEN);
+                        }
+
+
+                    } else {
+                        alertDialog("Wrong Answer", "Show Final Score?\nThe Correct answer is " + checker, R.drawable.ic_wrong);
+                        if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                            constraintLayout.setBackgroundColor(Color.RED);
+                        } else if ((getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) || (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)) {
+                            landscape.setBackgroundColor(Color.RED);
+                        }
+                        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                        if (Build.VERSION.SDK_INT > 26) {
+                            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+                        } else {
+                            vibrator.vibrate(200);
+                        }
                     }
                 }
+            });
+        }else if(flag==true){
+            countDownTimer.cancel();
+            if (chosen == checker) {
+                alertDialog("Correct Answer", "Continue With the Game", R.drawable.ic_correct);
+                if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                    constraintLayout.setBackgroundColor(Color.GREEN);
+                } else if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+                    landscape.setBackgroundColor(Color.GREEN);
+                }
+
+
+            } else {
+                alertDialog("Wrong Answer", "Show Final Score?\nThe Correct answer is " + checker, R.drawable.ic_wrong);
+                if (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                    constraintLayout.setBackgroundColor(Color.RED);
+                } else if ((getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) || (getScreenOrientation() == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE)) {
+                    landscape.setBackgroundColor(Color.RED);
+                }
+                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                if (Build.VERSION.SDK_INT > 26) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    vibrator.vibrate(200);
+                }
             }
-        });
+        }
 
 
     }
@@ -309,4 +336,48 @@ public class actualTest extends AppCompatActivity {
         pa.putExtra("points",points);
         startActivity(pa);
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable("list",testList);
+        outState.putInt("checker",checker);
+        outState.putInt("counter",counter);
+        outState.putBoolean("click",flag);
+        outState.putInt("chosen",chosen);
+        countDownTimer.cancel();
+    }
+
+    public void Timersetup(int val){
+
+        countDownTimer=new CountDownTimer(val*1000, 1000){
+            public void onTick(long millisUntilFinished){
+                timer.setText(String.valueOf(counter));
+                if (counter >= 7) {
+                    timer.setTextColor(getResources().getColor(R.color.Green));
+                }else if(counter>=3) {
+                    timer.setTextColor(getResources().getColor(R.color.Orange));
+                }else if(counter>=0){
+                    timer.setTextColor(getResources().getColor(R.color.Red));
+                }counter--;
+            }
+            public  void onFinish(){
+                alertDialog("Time up!","Show Final Score?",R.drawable.ic_wrong);
+                Vibrator vibrator=(Vibrator)getSystemService(VIBRATOR_SERVICE);
+                if (Build.VERSION.SDK_INT > 26) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
+                }else {
+                    vibrator.vibrate(200);
+                }
+
+            }
+
+        };
+        countDownTimer.start();
+    }
+
+
+
 }
+

@@ -9,9 +9,9 @@
         android:roundIcon="@mipmap/ic_new_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".levelPoints"></activity>
-        <activity android:name=".actualTest" />
-        <activity android:name=".inputPage" />
+        <activity android:name=".levelPoints" />
+        <activity android:name=".actualTest"/>
+        <activity android:name=".inputPage"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

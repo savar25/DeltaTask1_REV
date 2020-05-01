@@ -9,7 +9,7 @@
     tools:context=".actualTest">
 
     <ListView
-        android:id="@+id/testList"
+        android:id="@+id/testlist"
         android:layout_width="0dp"
         android:layout_height="280dp"
         android:layout_marginBottom="350dp"
@@ -31,13 +31,12 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="176dp"
         android:gravity="center"
-        android:text="TextView"
         android:textAlignment="center"
         android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/testList" />
+        app:layout_constraintTop_toBottomOf="@+id/testlist" />
 
     <TextView
         android:id="@+id/showTimer"
@@ -55,7 +54,7 @@
         app:layout_constraintBottom_toTopOf="@+id/timer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/testList" />
+        app:layout_constraintTop_toBottomOf="@+id/testlist" />
 
     <TextView
         android:id="@+id/inputShow"
@@ -68,7 +67,7 @@
         android:textAlignment="center"
         android:textColor="#0000FF"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/testList"
+        app:layout_constraintBottom_toTopOf="@+id/testlist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
