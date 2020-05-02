@@ -72,6 +72,7 @@ public class actualTest extends AppCompatActivity {
             counter=savedInstanceState.getInt("counter");
             flag=savedInstanceState.getBoolean("click");
             chosen=savedInstanceState.getInt("chosen");
+            points=savedInstanceState.getInt("points");
            Timersetup(counter);
         }else {
             separateNumbers(num);
@@ -346,6 +347,7 @@ public class actualTest extends AppCompatActivity {
         outState.putInt("counter",counter);
         outState.putBoolean("click",flag);
         outState.putInt("chosen",chosen);
+        outState.putInt("points",points);
         countDownTimer.cancel();
     }
 
